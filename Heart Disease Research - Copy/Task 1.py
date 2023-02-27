@@ -2,32 +2,29 @@
 import pandas as pd
 import numpy as np
 
-desired_width=320
+desired_width = 320
 
 pd.set_option('display.width', desired_width)
 
 np.set_printoptions(linewidth=desired_width)
 
-pd.set_option('display.max_columns',52)
+pd.set_option('display.max_columns', 52)
 
 #Reading in Heart_Disease.csv file which contains all other collected data on Heart Disease publications.
 data1 = pd.read_csv("Heart_disease.csv")
-#data1 = pd.read_csv("Heart_disease.csv", sep='\t')
-#data1.columns = data1.columns.str.replace(' ', '')
-#HeartDisease
 
-
+#Reading in cwurData.csv file which contains the university world rankings we want to add as new column
 data2 = pd.read_csv("cwurData.csv")
+
+#Dropping duplicate rows by using the institution and country columns as identifiers.
+#keep='last' Makes it so that the last or most recent duplicate entry is kept while the others are omitted.
 newdf = data2.drop_duplicates(subset=['Institution', 'country'], keep='last').reset_index(drop=True)
-#data2.columns = data2.columns.str.replace(' ', '')
 
 #Joins the two csv files.
-#data1.join(data2.set_index('Institution'), on='Institution') #FIXME combines both csv files and adds on unneccessary columns from "cswurData.csv"
-#pd.set_option('display.max_columns', 52)
-df1 = pd.merge(data1, newdf[['Institution', 'world_rank', 'year']], on='Institution', how='left')
+df1 = pd.merge(data1, newdf[['Institution', 'world_rank']], on='Institution', how='left')
 
-#df1 = df1.astype('str')
-#df1 = df1.drop_duplicates(subset=None, keep='last', inplace=False)
-#df2 = df1.drop_duplicates(subset=None, keep='last', inplace=False)
-print(df1)
-#print(data1.join(data2.set_index('Institution'), on='Institution'))
+#Instead of saving to the existing Heart_Diseae.csv this will create a new file. This is a precaution in case the original csv file is needed.
+df1.to_csv('Updated_Heart_Disease.csv')
+
+#print(df1)
+
