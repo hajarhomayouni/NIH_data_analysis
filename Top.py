@@ -1,16 +1,3 @@
-from top2vec import Top2Vec
-import pandas as pd
-df = pd.read_csv("Heart_disease.csv")
-titles = df['Title']
-titles = titles.tolist()
-model = Top2Vec(titles, speed="fast-learn")
-topic_num = model.get_num_topics()
-print(topic_num)
-topic_words, word_scores, topic_nums = model.get_topics(topic_num)
-print(topic_words)
-print(word_scores)
-print(topic_nums)
-model.save("trained")
-print("hello")
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:e0ec387f10b272028a46e259c40b0ac6f194432b28aa4ce441d12552636671b4
+size 390
