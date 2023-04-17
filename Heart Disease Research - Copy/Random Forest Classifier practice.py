@@ -3,6 +3,7 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
+from sklearn.metrics import classification_report, confusion_matrix
 
 # Predict citation_per_year based on world_rank, journal_ranking, year, and gender.
 
@@ -28,3 +29,7 @@ Y_prediction = classifier.predict(X_test)
 print()
 
 print("Model Accuracy: ", metrics.accuracy_score(Y_test, Y_prediction))
+
+print(confusion_matrix(Y_test, Y_prediction))
+print()
+print(classification_report(Y_test, Y_prediction))

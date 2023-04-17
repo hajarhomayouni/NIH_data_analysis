@@ -54,10 +54,17 @@ column3 = 'Citations Per Year'
 
 # Using MinMaxScaler to normalize each column
 df_sklearn[column1] = MinMaxScaler().fit_transform(np.array(df_sklearn[column1]).reshape(-1, 1))
+print(df_sklearn[column1].value_counts()[1.0])
+print(df_sklearn[column1].value_counts()[0.0])
+#print(df_sklearn[column1].value_counts()[-1.0])
+df_sklearn['APT'] = MinMaxScaler().fit_transform((np.array(df_sklearn['APT']).reshape((-1, 1))))
 df_sklearn[column2] = MinMaxScaler().fit_transform(np.array(df_sklearn[column2]).reshape(-1, 1))
 df_sklearn[column3] = MinMaxScaler().fit_transform(np.array(df_sklearn[column3]).reshape(-1, 1))
 
-#print(df_sklearn)
+# df_sklearn.to_csv('Normalized Data.csv')
+# print("Year", df_sklearn[column1])
+# print("Rank", df_sklearn[column1])
+# print("Citations Per Year", df_sklearn[column1])
 
 
 
@@ -93,23 +100,24 @@ df_sklearn[column3] = MinMaxScaler().fit_transform(np.array(df_sklearn[column3])
 # dividing the dataset into training and testing datasets
 # Leaving out world_rank for the time being, look for larger data sets
 
-X = df_sklearn[['Year', 'Rank', 'gender_new']]
+X = df_sklearn[['Year', 'APT', 'Rank', 'gender_new']]
+print(X)
 y = encoded_data1['Citations Per Year']
 
-#print(df_sklearn)
-
+# print(df_sklearn)
+#
 transform = preprocessing.LabelEncoder()
-
+#
 y_transformed = transform.fit_transform(y)
+
+
 # Y or predicted data column must be categorical or in other words 0 or 1
-
-
-
 # splitting in random train/test subsets
 #
 X_train, X_test, y_train, y_test = train_test_split(X, y_transformed, test_size=0.30)
 #
-classifier = RandomForestClassifier(max_depth=5, n_estimators=100)  # Create random forest classifier
+classifier = RandomForestClassifier(max_depth=32, n_estimators=100, min_samples_split=2, max_leaf_nodes=6)
+# Create random forest classifier
 #
 classifier.fit(X_train, y_train)
 #
@@ -120,4 +128,7 @@ print()
 print("Model Accuracy: ", metrics.accuracy_score(np.array(y_test), y_prediction))
 print(metrics.f1_score(y_test, y_prediction, average='weighted', labels=np.unique(y_prediction)))
 print(classification_report(y_test, y_prediction, zero_division=0))
+print()
+# print(classifier.predict([[1, 0.33, 0]]))
 
+#use APT 
