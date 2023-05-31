@@ -29,18 +29,22 @@ data1['ga_gender'].fillna('unknown', inplace=True)
 # Converting data type to category/categorical.
 # Same process will be used for topic column which will exist later on.
 data1['ga_gender'] = data1['ga_gender'].astype('category')
+data1['Topic'] = data1['Topic'].astype('category')
 
 # This will assign numerical values that will be stored in another column.
-# The values are stored in the gender_new column.
+# The values are stored in the gender_new and topic_ new columns.
 data1['gender_new'] = data1['ga_gender'].cat.codes
+data1['topic_new'] = data1['Topic'].cat.codes
 
 # New instance of one hot encoder
 prep = OneHotEncoder()
 
 #
 encoded_gender = pd.DataFrame(prep.fit_transform(data1[['gender_new']]).toarray())
+encoded_topic = pd.DataFrame(prep.fit_transform(data1[['topic_new']]).toarray())
 
 encoded_data1 = data1.join(encoded_gender)
+encoded_data1 = data1.join(encoded_topic)
 
 # print(encoded_data1)
 
@@ -54,54 +58,21 @@ column3 = 'Citations Per Year'
 
 # Using MinMaxScaler to normalize each column
 df_sklearn[column1] = MinMaxScaler().fit_transform(np.array(df_sklearn[column1]).reshape(-1, 1))
-print(df_sklearn[column1].value_counts()[1.0])
-print(df_sklearn[column1].value_counts()[0.0])
+# print(df_sklearn[column1].value_counts()[1.0])
+# print(df_sklearn[column1].value_counts()[0.0])
 #print(df_sklearn[column1].value_counts()[-1.0])
 df_sklearn['APT'] = MinMaxScaler().fit_transform((np.array(df_sklearn['APT']).reshape((-1, 1))))
 df_sklearn[column2] = MinMaxScaler().fit_transform(np.array(df_sklearn[column2]).reshape(-1, 1))
 df_sklearn[column3] = MinMaxScaler().fit_transform(np.array(df_sklearn[column3]).reshape(-1, 1))
 
-# df_sklearn.to_csv('Normalized Data.csv')
-# print("Year", df_sklearn[column1])
-# print("Rank", df_sklearn[column1])
-# print("Citations Per Year", df_sklearn[column1])
-
-
-
-# year_arr = np.array(data1['Year'])
-# rank_arr = np.array(data1['Rank'])
-#
-# normalized_year = preprocessing.normalize([year_arr])
-# normalized_rank = preprocessing.normalize([rank_arr])
-#
-# print("Normalized rank: ", normalized_rank)
-# print("Normalized year: ", normalized_year)
-
-# year_df = pd.DataFrame(normalized_year, columns=['Normalized_year'])
-# year_df.reset_index(drop=True, inplace=True)
-# print(year_df)
-# rank_df = pd.DataFrame(normalized_rank, columns=['Normalized_rank'])
-# print(rank_df)
-# rank_df.reset_index(drop=True, inplace=True)
-
-# encoded_data1.reset_index(drop=True, inplace=True)
-
-# Preprocessed_data = pd.concat([encoded_data1, year_df, rank_df], axis=1)
-
-# encoded_data1 = data1.join(year_df)
-# encoded_data1 = data1.join(rank_df)
-
-#print(Preprocessed_data)
-
-# print(X)
-
 # Predict citation_per_year based on world_rank, journal_ranking, year, and gender.
 # Need to add gender back to this now that I know labelEncoder works.
 # dividing the dataset into training and testing datasets
 # Leaving out world_rank for the time being, look for larger data sets
+# Including APT for testing purposes. See if it has any impact on the final outcome.
 
-X = df_sklearn[['Year', 'APT', 'Rank', 'gender_new']]
-print(X)
+X = df_sklearn[['Year', 'APT', 'Rank', 'gender_new', 'topic_new']]
+# print(X)
 y = encoded_data1['Citations Per Year']
 
 # print(df_sklearn)
@@ -131,4 +102,4 @@ print(classification_report(y_test, y_prediction, zero_division=0))
 print()
 # print(classifier.predict([[1, 0.33, 0]]))
 
-#use APT 
+#use APT
